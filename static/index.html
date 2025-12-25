@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Hospital Management System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Base */
+    :root{
+      --bg-1: #f6fbff;
+      --bg-2: #eef6fb;
+      --primary-600: #0d47a1;
+      --primary-500: #1976d2;
+      --accent: #2563eb;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 8px 30px rgba(14,22,40,0.06);
+    }
+
+    html,body{height:100%;}
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      color: #0f1724;
+      margin:0;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(90deg,var(--primary-600),var(--primary-500));
+      color: white;
+      text-align: center;
+      padding: 28px 14px;
+      box-shadow: 0 6px 22px rgba(13, 38, 77, 0.18);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    header h1{margin:0;font-weight:700;letter-spacing:0.2px;font-size:1.5rem;}
+    header p{margin:6px 0 0;font-size:0.85rem;opacity:0.95;letter-spacing:1px}
+
+    main { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+
+    /* Chat box */
+    .chatbox {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+      border: 1px solid rgba(15,23,36,0.04);
+    }
+
+    /* Messages area */
+    #messages {
+      height: 400px;
+      overflow-y: auto;
+      background: linear-gradient(180deg,#fbfdff,#f7fbff);
+      border: 1px solid rgba(15,23,36,0.06);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+      transition: box-shadow .18s ease;
+    }
+    #messages:focus{outline:none;box-shadow:0 6px 18px rgba(13,38,77,0.06)}
+
+    /* Message bubbles */
+    .user, .bot{
+      display:block;
+      max-width:88%;
+      padding:10px 14px;
+      border-radius:16px;
+      margin:8px 0;
+      word-wrap:break-word;
+      font-size:0.97rem;
+      line-height:1.35;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .user{
+      background: linear-gradient(90deg,var(--primary-600),var(--primary-500));
+      color: #fff;
+      margin-left:auto;
+      text-align:right;
+      box-shadow: 0 6px 18px rgba(13,38,77,0.08);
+    }
+    .user:active{transform:translateY(1px)}
+    .bot{
+      background: linear-gradient(180deg,#ffffff,#f3f8ff);
+      color: #0f1724;
+      margin-right:auto;
+      border-left: 3px solid rgba(25,118,210,0.12);
+      box-shadow: 0 4px 14px rgba(15,23,36,0.04);
+    }
+
+    /* Input row */
+    .input-row{display:flex;gap:10px;align-items:center}
+    #msg{
+      flex:1;
+      padding:12px 14px;
+      border:1px solid rgba(15,23,36,0.08);
+      border-radius:10px;
+      font-size:1rem;
+      background: linear-gradient(180deg,#ffffff,#fbfeff);
+      transition: box-shadow .12s ease, border-color .12s ease;
+    }
+    #msg:focus{outline:none;border-color:var(--accent);box-shadow:0 6px 18px rgba(37,99,235,0.08)}
+
+    #send{
+      padding:10px 18px;
+      border:none;
+      border-radius:10px;
+      background: linear-gradient(90deg,var(--accent),var(--primary-500));
+      color:white;font-weight:600;cursor:pointer;
+      box-shadow: 0 8px 20px rgba(37,99,235,0.12);
+      transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+    }
+    #send:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(37,99,235,0.14);opacity:0.98}
+    #send:active{transform:translateY(0)}
+
+    /* Tables */
+    table{border-collapse:collapse;width:100%;margin-top:8px;border-radius:8px;overflow:hidden}
+    th,td{padding:8px 10px;font-size:0.95rem;border-bottom:1px solid rgba(15,23,36,0.06);}
+    th{background: linear-gradient(90deg,var(--primary-500),var(--primary-600));color:white;text-align:left;font-weight:600}
+    td{background:transparent}
+    tr:hover td{background:rgba(13,38,77,0.02)}
+
+    /* Footer */
+    footer{text-align:center;padding:18px;background:transparent;color:var(--primary-500);margin-top:40px;font-weight:600}
+
+    /* Small responsive tweak */
+    @media (max-width:520px){
+      header h1{font-size:1.15rem}
+      #messages{height:320px}
+      .chatbox{padding:16px}
+    }
+
+    /* Nice thin scrollbar for modern browsers */
+    #messages::-webkit-scrollbar{width:10px}
+    #messages::-webkit-scrollbar-track{background:transparent}
+    #messages::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(15,23,36,0.08),rgba(15,23,36,0.14));border-radius:10px}
+    /* Animations */
+    @keyframes slideUpFade { from { opacity:0; transform: translateY(10px) scale(0.995);} to { opacity:1; transform: translateY(0) scale(1);} }
+    .enter{ animation: slideUpFade .28s cubic-bezier(.2,.9,.2,1) both }
+
+    /* Typing indicator */
+    .typing{ display:inline-flex;align-items:center;gap:8px;min-width:72px;padding:10px 14px;border-radius:16px;background:linear-gradient(180deg,#fff,#f4f8ff);color:transparent;border-left:3px solid rgba(25,118,210,0.12);box-shadow:0 6px 16px rgba(15,23,36,0.04)}
+    .typing:after{
+      content:'';
+      width:8px;height:8px;border-radius:50%;background:linear-gradient(180deg,var(--primary-500),var(--accent));box-shadow:0 6px 14px rgba(37,99,235,0.12);
+      animation: typingPulse 1s infinite ease-in-out;
+    }
+    @keyframes typingPulse{0%{transform:translateY(0);opacity:0.9}50%{transform:translateY(-4px);opacity:0.55}100%{transform:translateY(0);opacity:0.9}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏥 Hospital Management System</h1>
+    <p>CHAT ASSISTANT</p>
+  </header>
+
+  <main>
+    <section class="chatbox">
+      <div id="messages"></div>
+      <div class="input-row">
+        <input id="msg" placeholder="Type your command... (e.g. Show patients)" />
+        <button id="send">Send</button>
+      </div>
+    </section>
+  </main>
+
+
+  <script>
+    const messages = document.getElementById('messages');
+    // typing indicator element (created once)
+    const typingEl = document.createElement('div');
+    typingEl.className = 'bot typing';
+    typingEl.textContent = '\u200B'; // zero-width so layout reserved
+
+    function add(kind, text) {
+      const div = document.createElement('div');
+      div.className = kind;
+      div.textContent = text;
+      // animate in
+      div.classList.add('enter');
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function addTable(rows) {
+      const box = document.createElement('div');
+      box.className = 'bot';
+      box.classList.add('enter');
+      if (!rows || rows.length === 0) {
+        box.textContent = '🤖 No records found.';
+        messages.appendChild(box);
+        return;
+      }
+      const table = document.createElement('table');
+      const head = document.createElement('tr');
+      Object.keys(rows[0]).forEach(k => {
+        const th = document.createElement('th');
+        th.textContent = k;
+        head.appendChild(th);
+      });
+      table.appendChild(head);
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        Object.values(r).forEach(v => {
+          const td = document.createElement('td');
+          td.textContent = v ?? '';
+          tr.appendChild(td);
+        });
+        table.appendChild(tr);
+      });
+      box.appendChild(table);
+      messages.appendChild(box);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const msg = document.getElementById('msg').value.trim();
+      if (!msg) return;
+      add('user', msg);
+      document.getElementById('msg').value = '';
+      // show typing indicator
+      messages.appendChild(typingEl);
+      messages.scrollTop = messages.scrollHeight;
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        // remove typing indicator
+        if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+        if (data.type === 'table') addTable(data.data);
+        else add('bot', '🤖 ' + data.message);
+      } catch (err) {
+        if (typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+        add('bot', '⚠️ ' + err.message);
+      }
+    }
+
+    document.getElementById('send').addEventListener('click', sendMessage);
+    document.getElementById('msg').addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+  </script>
+</body>
+</html>

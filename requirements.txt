@@ -1,0 +1,5 @@
+Flask>=2.0.0
+mysql-connector-python>=8.0.0
+gunicorn>=20.1.0
+# Optional: install openai if you plan to use OpenAI endpoint polishing
+openai>=0.27.0
