@@ -109,12 +109,6 @@ docker run -p 5000:5000 hospital-management-system
 
 ---
 
-## 📸 Screenshots
-
-(Add screenshots of the application interface here)
-
----
-
 ## 🔮 Future Enhancements
 
 * 🔐 User Authentication (Admin, Doctor, Patient)
@@ -129,9 +123,3 @@ docker run -p 5000:5000 hospital-management-system
 
 **Yash Pardeshi**
 📍 Maharashtra, India
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License** and is intended for educational purposes.
